@@ -3,14 +3,12 @@ using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 
-main();
-
 static byte[] GenerateByte()
 {
     int length = new Random().Next(2, 7);
     byte[] numArray = new byte[length];
     for (int index = 0; index < length; ++index)
-        numArray[index] = 0;
+    numArray[index] = 0;
     return numArray;
 }
 
@@ -19,7 +17,7 @@ static string GenerateRandomString(int length)
     Random random = new Random();
     StringBuilder stringBuilder = new StringBuilder(length);
     for (int index = 0; index < length; ++index)
-        stringBuilder.Append("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz"[random.Next("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz".Length)]);
+    stringBuilder.Append("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz"[random.Next("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz".Length)]);
     return stringBuilder.ToString();
 }
 
@@ -28,11 +26,11 @@ static void ShuffleMD5(string file)
     int num = new FileInfo(file).Length > 1048576L ? 1048576 : 4096;
     byte[] numArray = GenerateByte();
     using (FileStream fileStream = new FileStream(file, (FileMode)6))
-        (fileStream).Write(numArray, 0, numArray.Length);
+    fileStream.Write(numArray, 0, numArray.Length);
     using (MD5 md5 = MD5.Create())
     {
         using (FileStream fileStream = new FileStream(file, (FileMode)3, (FileAccess)1, (FileShare)1, num))
-            Console.WriteLine("New MD5 hash: " + BitConverter.ToString((md5).ComputeHash(fileStream)).Replace("-", ""));
+        Console.WriteLine("New MD5 hash: " + BitConverter.ToString(md5.ComputeHash(fileStream)).Replace("-", ""));
     }
 }
 
@@ -40,15 +38,15 @@ static string ShuffleName(string currentDirectory, string oldFilePath)
 {
     Path.GetFileNameWithoutExtension(oldFilePath);
     string randomString = GenerateRandomString(8);
-    string str = Path.Combine(currentDirectory, randomString + ".exe");
+    string newFilePath = Path.Combine(currentDirectory, randomString + ".exe");
     try
     {
-        File.Move(oldFilePath, str);
+        File.Move(oldFilePath, newFilePath);
         DefaultInterpolatedStringHandler interpolatedStringHandler = new DefaultInterpolatedStringHandler(17, 2);
         interpolatedStringHandler.AppendLiteral("Renamed '");
         interpolatedStringHandler.AppendFormatted(oldFilePath);
         interpolatedStringHandler.AppendLiteral("' to '");
-        interpolatedStringHandler.AppendFormatted(str);
+        interpolatedStringHandler.AppendFormatted(newFilePath);
         interpolatedStringHandler.AppendLiteral("'.");
         Console.WriteLine(interpolatedStringHandler.ToStringAndClear());
     }
@@ -56,7 +54,7 @@ static string ShuffleName(string currentDirectory, string oldFilePath)
     {
         Console.WriteLine("An error occurred: " + ex.Message);
     }
-    return str;
+    return newFilePath;
 }
 
 static void main()
@@ -73,11 +71,11 @@ static void main()
             Console.WriteLine("Shuffling Hash, one moment..");
             ShuffleMD5(list[0]);
             Console.WriteLine("Shuffling exe name, one moment..");
-            string str = ShuffleName(baseDirectory, list[0]);
+            string newFileName = ShuffleName(baseDirectory, list[0]);
             Console.WriteLine("Shuffling complete, launching exe.");
             Process.Start(new ProcessStartInfo()
             {
-                FileName = str,
+                FileName = newFileName,
                 UseShellExecute = true
             });
         }
@@ -97,3 +95,5 @@ static void main()
         Console.ReadLine();
     }
 }
+
+main();
